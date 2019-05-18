@@ -17,19 +17,32 @@ namespace bp = boost::python;
     namespace np = boost::python::numpy;
 #endif
 
-void create_nd_array(){
+np::ndarray create_nd_array(){
 	np::dtype d_type = np::dtype::get_builtin<int>();
 	bp::tuple shape = bp::make_tuple(100);
 	np::ndarray arr = np::zeros(shape, d_type);
+	return arr;
 }
+
+np::ndarray create_nd_array_with_lambda(){
+	auto lambda = [&](){
+		np::dtype d_type = np::dtype::get_builtin<int>();
+		bp::tuple shape = bp::make_tuple(100);
+		np::ndarray arr = np::zeros(shape, d_type);
+		return arr;
+	};
+	np::ndarray ret_val = lambda();
+	return ret_val;
+} 
 
 
 class ArrayTester{
 public:
-	void create_nd_array_class(){
+	np::ndarray create_nd_array_class(){
 		np::dtype d_type = np::dtype::get_builtin<int>();
 		bp::tuple shape = bp::make_tuple(100);
 		np::ndarray arr = np::zeros(shape, d_type);
+		return arr;
 	}
 };
 
@@ -41,4 +54,7 @@ BOOST_PYTHON_MODULE(testarray){
 	bp::class_<ArrayTester>("ArrayTester")
 	.def("create_nd_array_class", &ArrayTester::create_nd_array_class)
 	;
+
+
+	bp::def("create_nd_array_with_lambda", create_nd_array_with_lambda);
 }
