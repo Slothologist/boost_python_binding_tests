@@ -23,8 +23,22 @@ void create_nd_array(){
 	np::ndarray arr = np::zeros(shape, d_type);
 }
 
+
+class ArrayTester{
+public:
+	void create_nd_array_class(){
+		np::dtype d_type = np::dtype::get_builtin<int>();
+		bp::tuple shape = bp::make_tuple(100);
+		np::ndarray arr = np::zeros(shape, d_type);
+	}
+};
+
 BOOST_PYTHON_MODULE(testarray){
 	np::initialize();
 	
 	bp::def("create_nd_array", create_nd_array);
+
+	bp::class_<ArrayTester>("ArrayTester")
+	.def("create_nd_array_class", &ArrayTester::create_nd_array_class)
+	;
 }
