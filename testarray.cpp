@@ -66,6 +66,7 @@ public:
 			return arr;
 		};
 		np::ndarray ret_val = lambda();
+		delete vec;
 		return ret_val;
 	}
 
