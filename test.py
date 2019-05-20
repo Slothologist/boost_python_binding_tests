@@ -14,6 +14,13 @@ assert arr.shape[0] == 100
 arr = tester.cnda_from_data()
 assert arr.shape[0] == 100
 
+a = None
 
+def function():
+    global a
+    a = 100
+
+tester.call_function(function)
+assert a
 
 exit()
