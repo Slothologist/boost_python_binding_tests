@@ -1,4 +1,5 @@
 import testarray
+import numpy
 
 arr = testarray.create_nd_array()
 assert arr.shape[0] == 100
@@ -22,5 +23,23 @@ def function():
 
 tester.call_function(function)
 assert a
+a = None
+
+# This does not work.
+#def function(parameter):
+#    global a
+#    a = parameter
+
+#tester.call_function_parameter(function)
+#assert a == 100
+#a = None
+
+def function(parameter1, parameter2):
+    global a
+    a = parameter1 + parameter2
+
+tester.call_function_two_parameter(function)
+assert a == 100
+a = None
 
 exit()

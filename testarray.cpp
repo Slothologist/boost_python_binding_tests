@@ -119,6 +119,20 @@ public:
 		callback();
 	}
 
+	/**
+	 * Does not compile somehow.
+	void call_function_parameter(boost::function<void(int)> callback){
+		callback(100);
+	}
+	 */ 
+
+	/**
+	 * This however does compile
+	 */
+	void call_function_two_parameter(boost::function<void(int, int)> callback){
+		callback(50, 50);
+	}
+
 };
 
 BOOST_PYTHON_MODULE(testarray){
@@ -131,9 +145,13 @@ BOOST_PYTHON_MODULE(testarray){
 	.def("create_nd_array_with_lambda", &ArrayTester::create_nd_array_with_lambda)
 	.def("cnda_from_data", &ArrayTester::cnda_from_data)
 	.def("call_function", &ArrayTester::call_function)
+	//.def("call_function_parameter", &ArrayTester::call_function_parameter)
+	.def("call_function_two_parameter", &ArrayTester::call_function_two_parameter)
 	;
 
 	function_converter()
         .from_python<void()>()
+	//.from_python<void(int)>()
+        .from_python<void(int, int)>()
         ;
 }
