@@ -33,3 +33,17 @@ target_link_libraries(testarray
         ${PYTHON_LIBRARIES}
         ${PythonInterp_LIBRARIES}
         )
+
+add_library(signal_example SHARED
+        signal_example.cpp
+        )
+
+set_target_properties(signal_example PROPERTIES
+        PREFIX ""
+        )
+
+target_link_libraries(signal_example
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARIES}
+        ${PythonInterp_LIBRARIES}
+        )

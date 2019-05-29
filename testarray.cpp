@@ -8,8 +8,9 @@
     #include <boost/python/numpy.hpp>
 #endif
 
+// std includes
 #include <vector>
-
+#include <iostream>
 
 // some namespaces to reduce obfuscation
 namespace bp = boost::python;
@@ -18,6 +19,14 @@ namespace bp = boost::python;
 #else
     namespace np = boost::python::numpy;
 #endif
+
+
+// includes from original start
+#include <string>
+#include <functional>
+#include <sox.h>
+// includes from original end
+
 
 
 struct function_converter {
@@ -133,7 +142,53 @@ public:
 		callback(50, 50);
 	}
 
-};
+    void call_function_parameter_ndarray(boost::function<void( np::ndarray, int )> callback){
+        std::vector<int>* vec = get_test_array();
+        bp::object own;
+        auto lambda = [&](){
+            np::dtype d_type = np::dtype::get_builtin<int>();
+            bp::tuple shape = bp::make_tuple(100);
+            bp::tuple stride = bp::make_tuple(sizeof(int));
+            np::ndarray arr = np::from_data(vec, d_type, shape, stride, own);
+            return arr;
+        };
+        np::ndarray ret_val = lambda();
+        delete vec;
+        callback(ret_val, 100);
+    }
+
+    boost::function<void(std::vector<int>*, int)> callback_cpp;
+
+    void register_callback_func(const boost::function<void( np::ndarray, int )> &callback_py){
+        std::cout << "register callback func" << std::endl << std::flush;
+        auto lambda = [&](std::vector<int>* vec, int unused){
+            std::cout << "callback cpp" << std::endl << std::flush;
+            bp::object own;
+            np::dtype d_type = np::dtype::get_builtin<int>();
+            bp::tuple shape = bp::make_tuple(100);
+            bp::tuple stride = bp::make_tuple(sizeof(int));
+            std::cout << "stride created" << std::endl << std::flush;
+
+            np::ndarray arr = np::from_data(vec, d_type, shape, stride, own);
+            std::cout << "ndarray successfully created" << std::endl << std::flush;
+
+            callback_py(arr, 100);
+            std::cout << "callback_py finished" << std::endl << std::flush;
+        };
+        //callback_cpp = lambda;
+    }
+
+    void call_callback_func(){
+        std::vector<int>* vec = get_test_array();
+        std::cout << "vec created" << std::endl << std::flush;
+        callback_cpp(vec, 100);
+        std::cout << "callback cpp finished" << std::endl << std::flush;
+        delete vec;
+    }
+
+    void operator=(ArrayTester const &) = delete;
+
+    };
 
 BOOST_PYTHON_MODULE(testarray){
 	np::initialize();

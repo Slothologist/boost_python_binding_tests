@@ -42,4 +42,23 @@ tester.call_function_two_parameter(function)
 assert a == 100
 a = None
 
+def function(ndarray, integer):
+    global a
+    a = ndarray
+
+tester.call_function_parameter_ndarray(function)
+assert a.shape[0] == 100
+a = None
+
+def function(ndarray, integer):
+    print('callback_py internal')
+    global a
+    a = ndarray
+    print('callback_py internal finished')
+
+tester.register_callback_func(function)
+assert not a
+tester.call_callback_func()
+assert a.shape[0] == 100
+
 exit()
